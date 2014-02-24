@@ -1,9 +1,9 @@
 Package: com.tokcs.worldpatcher
 Name: TheWorldPatcher
 Depends: mobilesubstrate
-Version: 0.0.1
+Version: 0.0.2
 Architecture: iphoneos-arm
-Description: An awesome MobileSubstrate tweak!
+Description: Enhance WebView of TheWorld.
 Maintainer: frah
 Author: frah
 Section: Tweaks
