@@ -11,9 +11,7 @@
 
 @property(retain) NSString * url;
 
-
-- (void).cxx_destruct;
-- (void)setUrl:(id)arg1;
+- (void)setUrl:(NSString*)arg1;
 - (id)url;
 - (void)webViewDidFinishLoad:(id)arg1;
 - (void)webViewDidStartLoad:(id)arg1;
