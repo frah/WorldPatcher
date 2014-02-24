@@ -1,7 +1,7 @@
 Package: com.tokcs.worldpatcher
 Name: TheWorldPatcher
 Depends: mobilesubstrate
-Version: 0.0.2
+Version: 0.0.8
 Architecture: iphoneos-arm
 Description: Enhance WebView of TheWorld.
 Maintainer: frah
