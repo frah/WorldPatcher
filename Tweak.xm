@@ -6,19 +6,24 @@
 #import "WebVC.h"
 
 /*
- * Functions
+ * Hooks
  */
-@interface WorldPatcher : NSObject <UIActionSheetDelegate>
-@property (nonatomic, retain) UIViewController *view;
-@property (retain) NSString *url;
-@property (retain) NSString *title;
-- (void)findTextViewAndMoveToTop:(UIView *)view;
-@end
+%hook WebVC
+- (void)naviSendto:(id)arg1 {
+    %log;
+    NSLog(@"Call naviSendto:%@",arg1);
 
-@implementation WorldPatcher
-@synthesize view;
-@synthesize url;
-@synthesize title;
+    UIActionSheet *as = [[[UIActionSheet alloc] init] autorelease];
+    [as setDelegate:self];
+    [as addButtonWithTitle:@"Share on Twitter"];
+    [as addButtonWithTitle:@"Share on Facebook"];
+    [as addButtonWithTitle:@"View on Safari"];
+    [as addButtonWithTitle:@"Cancel"];
+    as.cancelButtonIndex = 3;
+    [as showInView:self.view];
+}
+
+%new(v@:@)
 - (void)findTextViewAndMoveToTop:(UIView *)v {
          if ([v isKindOfClass:[UITextView class]]) {
              UITextView *textView = (UITextView *)v;
@@ -29,8 +34,15 @@
              [self findTextViewAndMoveToTop:subview];
          }
 }
+
+%new(v@:@i)
 - (void)actionSheet:(id)sheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSLog(@"TapBlock start: %ld", (long)buttonIndex);
+
+    UIWebView *web = MSHookIvar<UIWebView *>(self, "_web");
+    NSString *url = [web stringByEvaluatingJavaScriptFromString:@"location.href"];
+    NSString *title = [web stringByEvaluatingJavaScriptFromString:@"document.title"];
+
     if (buttonIndex <= 1) {
         NSString *serviceType;
         switch (buttonIndex) {
@@ -46,7 +58,7 @@
             [cmpview setCompletionHandler:nil];
             [cmpview setInitialText:[NSString stringWithFormat:@" -- %@", title]];
             [cmpview addURL:[NSURL URLWithString:url]];
-            [view presentViewController:cmpview animated:YES completion:^{
+            [self presentViewController:cmpview animated:YES completion:^{
                 [self findTextViewAndMoveToTop:cmpview.view];
             }];
             /*
@@ -61,36 +73,9 @@
     } else if (buttonIndex == 2) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
     }
-
-    [view retain];
-    [self release];
-    self = nil;
-}
-@end
-
-
-/*
- * Hooks
- */
-%hook WebVC
-- (void)naviSendto:(id)arg1 {
-    %log;
-    WorldPatcher *wp = [[%c(WorldPatcher) alloc] init];
-    wp.view = self;
-
-    UIWebView *web = MSHookIvar<UIWebView *>(self, "_web");
-    wp.url = [web stringByEvaluatingJavaScriptFromString:@"location.href"];
-    wp.title = [web stringByEvaluatingJavaScriptFromString:@"document.title"];
-    NSLog(@"naviSendto: %@, %@", wp.url, wp.title);
-
-    UIActionSheet *as = [[[UIActionSheet alloc] init] autorelease];
-    [as setDelegate:wp];
-    [as addButtonWithTitle:@"Share on Twitter"];
-    [as addButtonWithTitle:@"Share on Facebook"];
-    [as addButtonWithTitle:@"View on Safari"];
-    [as addButtonWithTitle:@"Cancel"];
-    as.cancelButtonIndex = 3;
-    [as showInView:self.view];
 }
 %end
 
+%ctor {
+    %init
+}

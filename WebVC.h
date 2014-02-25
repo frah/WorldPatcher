@@ -4,7 +4,7 @@
 
 @class NSString, UIWebView;
 
-@interface WebVC : StackBaseVC <UIWebViewDelegate> {
+@interface WebVC : StackBaseVC <UIWebViewDelegate,UIActionSheetDelegate> {
     NSString *url;
     UIWebView *_web;
 }
@@ -28,5 +28,6 @@
 - (float)inAnimation:(float)arg1;
 - (void)makeView;
 - (void)changeHeight;
+- (void)findTextViewAndMoveToTop:(UIView *)v;
 
 @end
