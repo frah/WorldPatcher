@@ -59,16 +59,12 @@
             [cmpview setInitialText:[NSString stringWithFormat:@" -- %@", title]];
             [cmpview addURL:[NSURL URLWithString:url]];
             [self presentViewController:cmpview animated:YES completion:^{
-                [self findTextViewAndMoveToTop:cmpview.view];
-            }];
-            /*
-            [win.rootViewController presentViewController:cmpview animated:YES completion:^{
+                //[self findTextViewAndMoveToTop:cmpview.view];
                 UIWindow *win = [[UIApplication sharedApplication] keyWindow];
                 UITextView *textView = [win performSelector:@selector(firstResponder)];
                 textView.selectedRange = NSMakeRange(0, 0);
             }];
-            */
-            [cmpview release];
+            //[cmpview release];
         }
     } else if (buttonIndex == 2) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
